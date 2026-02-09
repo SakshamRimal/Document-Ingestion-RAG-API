@@ -1,63 +1,79 @@
 # PalmMind Backend API
 
-This project is a backend system built with FastAPI that provides:
-
-1. **Document Ingestion API**
-   - Upload `.pdf` or `.txt` files.
-   - Extract text from documents.
-   - Chunk documents with selectable strategies.
-   - Generate embeddings and store them in vector databases (Pinecone, Qdrant, Weaviate, or Milvus).
-   - Store document metadata in SQL/NoSQL database.
-
-2. **Conversational RAG API**
-   - Multi-turn chatbot using Redis for memory.
-   - Handles custom queries and responses.
-   - Supports **interview booking** with fields: name, email, date, and time.
-   - Stores booking information in the database.
+A FastAPI-based backend for document ingestion and conversational RAG with Gemini Flash 2.5.
 
 ## Features
 
-- Modular and clean code structure.
-- Uses SQLAlchemy for database management.
-- Pydantic schemas for request and response validation.
-- Redis integration for chat memory.
+- **Document Ingestion**: Upload PDF/TXT files, extract text, chunk with two strategies
+- **Conversational RAG**: Multi-turn chat using Redis memory and Gemini Flash 2.5
+- **Interview Booking**: LLM-powered booking detection and scheduling
+- **Vector Storage**: Pinecone for document embeddings
+- **Chat Memory**: Redis for conversation history
+
+## Project Structure
+
+```
+app/
+├── main.py              # FastAPI entry point
+├── embeddings.py        # HuggingFace embeddings
+├── ingestion.py        # Document processing
+├── llm_service.py      # Gemini LLM integration
+├── memory.py           # Redis chat memory
+├── pinecone_db.py      # Vector storage
+├── api/
+│   ├── document.py     # /documents/ingest
+│   ├── chat.py        # /chat (RAG + booking)
+│   └── booking.py     # /booking
+├── core/
+│   ├── config.py      # API keys
+│   └── database.py    # SQLAlchemy + Redis
+└── db/
+    ├── models.py      # SQL tables
+    ├── schemas.py     # Pydantic models
+    └── crud.py        # Database operations
+```
 
 ## Installation
 
-1. Clone the repository:
-
 ```bash
+# Clone and enter directory
 git clone <repository-url>
 cd PalmMind
-Create and activate virtual environment:
 
-bash
-Copy code
+# Create virtual environment
 python -m venv myenv
 source myenv/bin/activate  # Linux/Mac
 myenv\Scripts\activate     # Windows
-Install dependencies:
 
-bash
-Copy code
+# Install dependencies
 pip install -r requirements.txt
-Run the server:
-
-bash
-Copy code
-uvicorn main:app --reload
-Usage
-Access the API at http://127.0.0.1:8000/
-
-Document ingestion: POST /documents/upload
-
-Chat endpoint: POST /chat/
-
-Booking endpoint: POST /chat/booking
-
-License
-This project is open-source and free to use.
-
-yaml
-Copy code
 ```
+
+## Environment Variables
+
+Create a `.env` file:
+
+```env
+# Database
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/ragdb
+
+# Redis
+REDIS_URL=redis://localhost:6379/0
+
+# Pinecone
+PINECONE_API_KEY=your-pinecone-key
+PINECONE_ENV=your-region
+
+# Gemini (for LLM features)
+GEMINI_API_KEY=your-gemini-api-key
+```
+
+Get Gemini API key: https://aistudio.google.com/app/apikey
+
+## Run Server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+API docs: http://localhost:8000/docs
