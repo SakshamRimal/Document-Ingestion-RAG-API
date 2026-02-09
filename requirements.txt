@@ -1,0 +1,14 @@
+langchain==0.3.26
+flask==3.1.1 
+sentence-transformers==4.1.0
+pypdf==5.6.1 
+python-dotenv==1.1.0
+langchain-pinecone==0.2.8 
+langchain-community==0.3.26
+fastapi==0.111.1
+uvicorn[standard]==0.23.2
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+pinecone>=6.0.0,<8.0.0
+redis
+google-generativeai>=0.8.0 

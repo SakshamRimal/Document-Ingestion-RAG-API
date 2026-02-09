@@ -1,0 +1,45 @@
+"""Database configuration and connection"""
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
+import os
+from typing import Generator
+
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
+# Database URL
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://postgres:postgres@localhost:5432/ragdb"
+)
+
+# Redis URL
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+
+# Create SQLAlchemy engine
+engine = create_engine(
+    DATABASE_URL,
+    echo=True,
+    future=True
+)
+
+# Create SessionLocal
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+# Base class for models
+Base = declarative_base()
+
+
+def get_db() -> Generator[Session, None, None]:
+    """Get database session"""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
