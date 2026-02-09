@@ -29,26 +29,24 @@ This project is a backend system built with FastAPI that provides:
 ```bash
 git clone <repository-url>
 cd PalmMind
-
-
 Create and activate virtual environment:
 
+bash
+Copy code
 python -m venv myenv
 source myenv/bin/activate  # Linux/Mac
 myenv\Scripts\activate     # Windows
-
-
 Install dependencies:
 
+bash
+Copy code
 pip install -r requirements.txt
-
-
 Run the server:
 
+bash
+Copy code
 uvicorn main:app --reload
-
 Usage
-
 Access the API at http://127.0.0.1:8000/
 
 Document ingestion: POST /documents/upload
@@ -58,6 +56,8 @@ Chat endpoint: POST /chat/
 Booking endpoint: POST /chat/booking
 
 License
-
 This project is open-source and free to use.
+
+yaml
+Copy code
 ```
