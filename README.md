@@ -1,4 +1,4 @@
-# PalmMind Backend API
+# Backend API
 
 A FastAPI-based backend for document ingestion and conversational RAG with Gemini Flash 2.5.
 
