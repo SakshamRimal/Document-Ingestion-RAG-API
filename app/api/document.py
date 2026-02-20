@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.ingestion import ingest_document
 from app.core.database import get_db
 from app.db.schemas import DocumentUploadResponse
+from app.db.crud import get_all_chunks
 
 router = APIRouter(tags=["Documents"])
 
@@ -48,3 +49,31 @@ def ingest_document_endpoint(
         if os.path.exists(file_path):
             os.remove(file_path)
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/list")
+def list_documents(db: Session = Depends(get_db)):
+    """List all ingested documents"""
+    chunks = get_all_chunks(db)
+    documents = {}
+    for chunk in chunks:
+        doc_name = chunk.document_name
+        if doc_name not in documents:
+            documents[doc_name] = {
+                "name": doc_name,
+                "chunks": 0,
+                "vector_ids": []
+            }
+        documents[doc_name]["chunks"] += 1
+        documents[doc_name]["vector_ids"].append(chunk.vector_id)
+    return {"documents": list(documents.values())}
+
+
+@router.get("/count")
+def get_document_count(db: Session = Depends(get_db)):
+    """Get total document count"""
+    chunks = get_all_chunks(db)
+    return {
+        "total_chunks": len(chunks),
+        "unique_documents": len(set(c.document_name for c in chunks))
+    }

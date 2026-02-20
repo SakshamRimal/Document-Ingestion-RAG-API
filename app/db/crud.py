@@ -35,3 +35,8 @@ def create_booking(db: Session, booking: schemas.BookingCreate) -> models.Bookin
     db.commit()
     db.refresh(db_booking)
     return db_booking
+
+
+def get_all_chunks(db: Session):
+    """Get all document chunks"""
+    return db.query(models.DocumentChunk).all()

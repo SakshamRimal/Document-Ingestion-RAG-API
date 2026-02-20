@@ -1,24 +1,28 @@
-"""Chat API for conversational RAG"""
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import List
+
 from app.db import get_db
-from app.db.schemas import ChatRequest, ChatResponse
+from app.db.schemas import ChatRequest, ChatResponse, BookingCreate
+from app.db.crud import create_booking
+from app.embeddings import get_embeddings
 from app.memory import add_to_memory, get_memory
 from app.pinecone_db import get_vectorstore
-from app.embeddings import get_embeddings
-from app.llm_service import generate_rag_response, detect_booking_intent, generate_booking_confirmation
-from app.db.crud import create_booking
-from app.db.schemas import BookingCreate
+from app.llm_service import (
+    generate_rag_response,
+    detect_booking_intent,
+    generate_booking_confirmation,
+)
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
 
 
+
 @router.get("/history/{session_id}")
 def get_chat_history(session_id: str):
-    """Get chat history for a session"""
-    history = get_memory(session_id)
-    return {"session_id": session_id, "history": history}
+    return {
+        "session_id": session_id,
+        "history": get_memory(session_id)
+    }
 
 
 @router.post("/", response_model=ChatResponse)
@@ -35,7 +39,6 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)):
                 history=get_memory(request.session_id)
             )
         
-        # Create booking
         booking = BookingCreate(
             name=booking_info.name,
             email=booking_info.email or "pending@example.com",
